@@ -19,7 +19,7 @@ invisible-watermark>=0.1.5
 streamlit-drawable-canvas==0.8.0
 torch==1.12.1
 torchvision==0.13.1
-torchtext==0.13.1
+torchtext==0.6.0
 opencv-python==4.5.5.64
 pudb==2019.2
 torch-fidelity==0.3.0

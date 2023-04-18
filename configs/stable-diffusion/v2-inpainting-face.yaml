@@ -73,14 +73,14 @@ data:
     num_workers: 4
     num_val_workers: 0 # Avoid a weird val dataloader issue
     train:
-      target: ldm.data.base.InpaintingIterableDataset
+      target: ldm.data.base.InpaintingDataset
       params:
         data_path: "dataset"
         mask_path: "dataset_masks"
         split: "train"
     validation:
       train:
-      target: ldm.data.base.InpaintingIterableDataset
+      target: ldm.data.base.InpaintingDataset
       params:
         data_path: "dataset"
         mask_path: "dataset_masks"

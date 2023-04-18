@@ -1504,7 +1504,7 @@ class LatentFinetuneDiffusion(LatentDiffusion):
                  finetune_keys=("model.diffusion_model.input_blocks.0.0.weight",
                                 "model_ema.diffusion_modelinput_blocks00weight"
                                 ),
-                 keep_finetune_dims=4,
+                 keep_finetune_dims=9,
                  # if model was trained without concat mode before and we would like to keep these channels
                  c_concat_log_start=None,  # to log reconstruction of c_concat codes
                  c_concat_log_end=None,

@@ -669,6 +669,7 @@ if __name__ == "__main__":
         lightning_config.trainer = trainer_config
 
         # model
+        print(config.keys())
         model = instantiate_from_config(config.model)
         model.cpu()
 
