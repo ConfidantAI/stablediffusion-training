@@ -348,3 +348,22 @@ class CLIPEmbeddingNoiseAugmentation(ImageConcatWithNoiseAugmentation):
         z = self.unscale(z)
         noise_level = self.time_embed(noise_level)
         return z, noise_level
+
+from torchvision import transforms
+from .VAE import VAEXperiment
+
+class FaceVAEEncoder(AbstractEncoder):
+    """
+    Uses a VAE trained on synthetic faces -> 1024 latent for inpainting finetuning
+    """
+    def __init__(self, model_path, shape=512):
+        super().__init__()
+        self.model = VAEXperiment.load_from_checkpoint(model_path)
+        self.model.eval()
+
+    def forward(self, img):
+        out = self.model.forward(img.float())
+        return out[2].unsqueeze(1)
+    
+    def encode(self, img):
+        return self(img)
