@@ -12,11 +12,20 @@ model:
     image_size: 64
     channels: 4
     cond_stage_trainable: false
-    conditioning_key: hybrid
+    conditioning_key: concat
     scale_factor: 0.18215
     monitor: val/loss_simple_ema
     use_ema: false
     finetune_keys: null
+
+    scheduler_config: # 10000 warmup steps
+      target: ldm.lr_scheduler.LambdaLinearScheduler
+      params:
+        warm_up_steps: [ 2500 ] # NOTE for resuming. use 10000 if starting from scratch
+        cycle_lengths: [ 10000000000000 ] # incredibly large number to prevent corner cases
+        f_start: [ 1.e-6 ]
+        f_max: [ 1. ]
+        f_min: [ 1. ]
 
     unet_config:
       target: ldm.modules.diffusionmodules.openaimodel.UNetModel
@@ -38,6 +47,7 @@ model:
 
     first_stage_config:
       target: ldm.models.autoencoder.AutoencoderKL
+      ckpt_path: "checkpoints/vae-ft-mse-840000-ema-pruned.ckpt"
       params:
         embed_dim: 4
         monitor: val/rec_loss
