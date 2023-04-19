@@ -756,6 +756,7 @@ if __name__ == "__main__":
             modelckpt_cfg =  OmegaConf.create()
         modelckpt_cfg = OmegaConf.merge(default_modelckpt_cfg, modelckpt_cfg)
         rank_zero_print(f"Merged modelckpt-cfg: \n{modelckpt_cfg}")
+        trainer_kwargs["max_epochs"] = 20
         if version.parse(pl.__version__) < version.parse('1.4.0'):
             trainer_kwargs["checkpoint_callback"] = instantiate_from_config(modelckpt_cfg)
 

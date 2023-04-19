@@ -55,10 +55,13 @@ class InpaintingDataset(Dataset):
         mask = torch.permute(mask, (1, 2, 0))
         masked_image = img * (mask < 0.5)
 
+        if img == '':
+            print(img)
         return {
             "jpg": img,
             "mask": mask[:, :, 0].unsqueeze(2),
-            "masked_image": masked_image
+            "masked_image": masked_image,
+            "face": img,
         }
 
 
