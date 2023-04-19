@@ -112,6 +112,9 @@ class VanillaVAE(BaseVAE):
         :param input: (Tensor) Input tensor to encoder [N x C x H x W]
         :return: (Tensor) List of latent codes
         """
+        input_tensor = input[0].unsqueeze(0)
+        for i in range(1, len(input)):
+            input_tensor = torch.cat((input_tensor, input[i].unsqueeze(0)))
         result = self.encoder(input)
         result = torch.flatten(result, start_dim=1)
 

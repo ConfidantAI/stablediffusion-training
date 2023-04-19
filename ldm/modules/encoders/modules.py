@@ -362,7 +362,7 @@ class FaceVAEEncoder(AbstractEncoder):
         self.model.eval()
 
     def forward(self, img):
-        out = self.model.forward(img.float())
+        out = self.model.forward(img)
         return out[2].unsqueeze(1)
     
     def encode(self, img):
