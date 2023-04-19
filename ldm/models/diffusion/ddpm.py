@@ -841,7 +841,6 @@ class LatentDiffusion(DDPM):
         if self.model.conditioning_key is not None:
             assert c is not None
             if self.cond_stage_trainable:
-                print("here at 846")
                 c = self.get_learned_conditioning(c)
             if self.shorten_cond_schedule:  # TODO: drop this option
                 tc = self.cond_ids[t].to(self.device)

@@ -12,7 +12,7 @@ model:
     image_size: 64
     channels: 4
     cond_stage_trainable: false
-    conditioning_key: concat
+    conditioning_key: hybrid
     scale_factor: 0.18215
     monitor: val/loss_simple_ema
     use_ema: false
