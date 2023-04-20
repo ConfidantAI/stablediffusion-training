@@ -33,6 +33,8 @@ class InpaintingDataset(Dataset):
         self.data_dir = Path(data_path)
         self.mask_dir = Path(mask_path)
 
+        self.split = split
+
         self.transforms = transforms.Compose([transforms.Resize((512, 512)),
                                               transforms.ToTensor(),])
         imgs = sorted([f for f in self.data_dir.iterdir() if f.suffix == '.jpg'])
@@ -55,9 +57,10 @@ class InpaintingDataset(Dataset):
         mask = torch.permute(mask, (1, 2, 0))
         masked_image = img * (mask < 0.5)
 
+        temp_mask = torch.permute(masked_image, (2, 0, 1))
         t = transforms.ToPILImage()
-        temp_im = t(masked_image)
-        temp_im.save("{}.png" % str(idx))
+        temp_im = t(temp_mask)
+        temp_im.save("temp/%s/%s.png" % (self.split, str(idx)))
 
         if img == '':
             print(img)
