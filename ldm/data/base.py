@@ -55,6 +55,10 @@ class InpaintingDataset(Dataset):
         mask = torch.permute(mask, (1, 2, 0))
         masked_image = img * (mask < 0.5)
 
+        t = transforms.ToPILImage()
+        temp_im = t(masked_image)
+        temp_im.save("{}.png" % str(idx))
+
         if img == '':
             print(img)
         return {
