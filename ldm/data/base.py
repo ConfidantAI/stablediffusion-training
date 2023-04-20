@@ -39,7 +39,7 @@ class InpaintingDataset(Dataset):
         masks = sorted([f for f in self.mask_dir.iterdir() if f.suffix == '.png'])
         
         self.imgs = imgs[:int(len(imgs) * 0.75)] if split == "train" else imgs[int(len(imgs) * 0.75):]
-        self.masks = masks[:int(len(masks) * 0.75)] if split == "train" else imgs[int(len(masks) * 0.75):]
+        self.masks = masks[:int(len(masks) * 0.75)] if split == "train" else masks[int(len(masks) * 0.75):]
     
     def __len__(self):
         return len(self.imgs)
