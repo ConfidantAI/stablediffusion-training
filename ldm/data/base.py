@@ -40,8 +40,8 @@ class InpaintingDataset(Dataset):
         imgs = sorted([f for f in self.data_dir.iterdir() if f.suffix == '.jpg'])
         masks = sorted([f for f in self.mask_dir.iterdir() if f.suffix == '.png'])
         
-        self.imgs = imgs[:int(len(imgs) * 0.75)] if split == "train" else imgs[int(len(imgs) * 0.75):]
-        self.masks = masks[:int(len(masks) * 0.75)] if split == "train" else masks[int(len(masks) * 0.75):]
+        self.imgs = imgs[:2000] if split == "train" else imgs[2000:2500]
+        self.masks = masks[:2000] if split == "train" else masks[2000:2500]
     
     def __len__(self):
         return len(self.imgs)
@@ -57,13 +57,6 @@ class InpaintingDataset(Dataset):
         mask = torch.permute(mask, (1, 2, 0))
         masked_image = img * (mask < 0.5)
 
-        temp_mask = torch.permute(masked_image, (2, 0, 1))
-        t = transforms.ToPILImage()
-        temp_im = t(temp_mask)
-        temp_im.save("temp/%s/%s.png" % (self.split, str(idx)))
-
-        if img == '':
-            print(img)
         return {
             "jpg": img,
             "mask": mask[:, :, 0].unsqueeze(2),
