@@ -41,7 +41,8 @@ class InpaintingDataset(Dataset):
                                               transforms.Lambda(lambda x: rearrange(x * 2. - 1., 'c h w -> h w c')),])
         
         self.face_transforms = transforms.Compose([transforms.Resize((512, 512)),
-                                                   transforms.ToTensor(),])
+                                                   transforms.ToTensor(),
+                                                   transforms.Lambda(lambda x: rearrange(x, 'c h w -> h w c')),])
         imgs = sorted([f for f in self.data_dir.iterdir() if f.suffix == '.jpg'])
         masks = sorted([f for f in self.mask_dir.iterdir() if f.suffix == '.png'])
         
@@ -60,8 +61,6 @@ class InpaintingDataset(Dataset):
         mask[mask < 0.5] = 0
         mask[mask > 0.5] = 1
         mask = torch.from_numpy(mask[..., None])
-        print(mask.shape)
-        print(img.shape)
         
         face = self.face_transforms(img)
         img = self.transforms(img)
