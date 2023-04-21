@@ -2,6 +2,7 @@ import os
 import numpy as np
 from abc import abstractmethod
 from pathlib import Path
+from einops import rearrange
 import torch
 from torchvision.datasets.folder import default_loader
 from torchvision import transforms
@@ -36,7 +37,11 @@ class InpaintingDataset(Dataset):
         self.split = split
 
         self.transforms = transforms.Compose([transforms.Resize((512, 512)),
-                                              transforms.ToTensor(),])
+                                              transforms.ToTensor(),
+                                              transforms.Lambda(lambda x: rearrange(x * 2. - 1., 'c h w -> h w c')),])
+        
+        self.face_transforms = transforms.Compose([transforms.Resize((512, 512)),
+                                                   transforms.ToTensor(),])
         imgs = sorted([f for f in self.data_dir.iterdir() if f.suffix == '.jpg'])
         masks = sorted([f for f in self.mask_dir.iterdir() if f.suffix == '.png'])
         
@@ -49,19 +54,23 @@ class InpaintingDataset(Dataset):
     def __getitem__(self, idx):
         img = default_loader(self.imgs[idx])
         mask = default_loader(self.masks[idx])
+
+        mask = np.array(mask.convert("L"))
+        mask = mask.astype(np.float32) / 255.0
+        mask = mask[None, None]
+        mask[mask < 0.5] = 0
+        mask[mask >= 0.5] = 1
+        mask = torch.from_numpy(mask)
         
-        if self.transforms is not None:
-            img = self.transforms(img)
-            mask = self.transforms(mask)
-        img = torch.permute(img, (1, 2, 0))
-        mask = torch.permute(mask, (1, 2, 0))
+        face = self.face_transforms(img)
+        img = self.transforms(img)
         masked_image = img * (mask < 0.5)
 
         return {
             "jpg": img,
             "mask": mask[:, :, 0].unsqueeze(2),
             "masked_image": masked_image,
-            "face": img,
+            "face": face,
         }
 
 
