@@ -57,10 +57,11 @@ class InpaintingDataset(Dataset):
 
         mask = np.array(mask.convert("L"))
         mask = mask.astype(np.float32) / 255.0
-        mask = mask[None, None]
         mask[mask < 0.5] = 0
-        mask[mask >= 0.5] = 1
-        mask = torch.from_numpy(mask)
+        mask[mask > 0.5] = 1
+        mask = torch.from_numpy(mask[..., None])
+        print(mask.shape)
+        print(img.shape)
         
         face = self.face_transforms(img)
         img = self.transforms(img)
@@ -68,7 +69,7 @@ class InpaintingDataset(Dataset):
 
         return {
             "jpg": img,
-            "mask": mask[:, :, 0].unsqueeze(2),
+            "mask": mask,
             "masked_image": masked_image,
             "face": face,
         }
